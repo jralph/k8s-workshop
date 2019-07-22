@@ -69,6 +69,7 @@ spec:
   ports:
     - port: 80
       targetPort: web
+      name: web
   selector:
     app.kubernetes.io/name: lobsters
   type: NodePort
@@ -247,6 +248,8 @@ This is where kubernetes introduces `Ingress`.
 An ingress is a configuration of routing of how an ingress controller should route traffic to a service.
 
 Running an ingress controller locally is out of the scope of this guide, but below is an example of how to connect our lobster service to an ingress controller using an `Ingress`.
+
+The below declaration will setup an ingress rule that any host matching `lobsters.example.com` with the path starting with `/` should be routed to our service at the port `web`.
 
 ```yml
 apiVersion: extensions/v1beta1
