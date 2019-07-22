@@ -238,6 +238,36 @@ Delete the deployment and service:
 kubectl delete deployment,service -l app.kubernetes.io/name=lobsters
 ```
 
+### Ingress
+
+Above, we've been using services with a type of `NodePort` to gain access to our pods/containers. In the real world, this might not be all that suitable as you may have load balancers and dns to contend with.
+
+This is where kubernetes introduces `Ingress`.
+
+An ingress is a configuration of routing of how an ingress controller should route traffic to a service.
+
+Running an ingress controller locally is out of the scope of this guide, but below is an example of how to connect our lobster service to an ingress controller using an `Ingress`.
+
+```yml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lobsters
+  labels:
+    app.kubernetes.io/name: lobsters
+spec:
+  tls:
+  - secretName: lobsters.example.com
+  rules:
+  - host: lobsters.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: lobsters
+          servicePort: web
+```
+
 ## Cleanup
 
 Delete everything we created in this lab.
