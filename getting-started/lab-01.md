@@ -212,6 +212,26 @@ kubectl get pods
 
 You should now see a total of 5 pods.
 
+Let's update the image to 2.0!
+
+In your `deployment.yml` file, change the container image to `gcr.io/google-samples/lobsters:2.0`.
+
+Let's apply our updated deployment.
+
+```sh
+kubectl apply -f deployment.yml
+```
+
+Now if we look at the pods, we should gradually see the new pods start to appear, and the old ones disapear. This is achieved by the deployment creating a new replica set and gradually scaling it up, while gradually sclaing down and deleting the old replica set.
+
+We can see this.
+
+```sh
+kubectl get replicaset
+```
+
+On running this command again, you should see the number of replicas gradually change, if the rollout has not already completed!
+
 Delete the deployment and service:
 
 ```sh
