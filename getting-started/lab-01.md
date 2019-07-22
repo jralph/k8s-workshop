@@ -100,3 +100,128 @@ Delete the service and pod by their shared labels.
 ```sh
 kubectl delete pod,service -l app.kubernetes.io/name=lobsters
 ```
+
+### Deployments
+
+When we delete the above pod, it stays deleted. Your pod can also disapear if your cluster node fails, or if the app crashes and can't be restarted. The Kubernetes solution to this is a Deployment. A deployment will create a Replica Set that ensures a pod or number of pods is always running somewhere in the cluster. In fact, it is almost never appropriate to create individual pods as we did above.
+
+In the below declaration we create a deployment of our lobster app. We give it the usual labels so we know this deployment is part of the lobster app. We define `relicas: 1` to tell the deployment that there should always be 1 copy of the pod running at all times. We specify a selector to tell the deployment how to find which pods to manage. We define a template to tell the deployment how to create new pods when needed. This is very similar to the `spec` section our pod declaration above.
+
+Create a file called `deployment.yml` with the below deployment declaration.
+
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lobsters
+  labels:
+    app.kubernetes.io/name: lobsters
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: lobsters
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: lobsters
+    spec:
+      containers:
+      - name: lobsters
+        image: gcr.io/google-samples/lobsters:1.0
+        ports:
+        - containerPort: 3000
+          name: web
+```
+
+```sh
+kubectl apply -f ./service.yml,./deployment.yml
+```
+
+Check the deployment status:
+
+```sh
+kubectl get deployment lobsters
+```
+
+```txt
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+lobsters   1/1     1            1           10s
+```
+
+Check the service's node port again:
+
+
+```sh
+kubectl get service lobsters
+```
+
+```txt
+NAME       TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+lobsters   NodePort   10.105.84.179   <none>        80:30957/TCP   79m
+```
+
+Check the service is working by visiting the NodeIP `localhost:30957`.
+
+Now, look at the pod.
+
+```sh
+kubectl get pods
+```
+
+You will see there is now a hash/code after the pod name. This is because it was created by our deployment.
+
+Try deleting a pod.
+
+```sh
+kubectl delete pod lobsters-jf0xs
+```
+
+Let's look at our pods again:
+
+```sh
+kubectl get pods
+```
+
+You can see we have a pod with a new name starting up, or already running.
+
+Scaling this is easy:
+
+```sh
+kubectl scale --replicas=5 deployment lobsters
+```
+
+We can also edit the `deployment.yml` file and set `replicas: 5`, then reapply the file. This would give the same result.
+
+Check the deployment status:
+
+```sh
+kubectl get deployment lobsters
+```
+
+```txt
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+lobsters   2/5     1            1           5m
+```
+
+Check the pods:
+
+```sh
+kubectl get pods
+```
+
+You should now see a total of 5 pods.
+
+Delete the deployment and service:
+
+```sh
+kubectl delete deployment,service -l app.kubernetes.io/name=lobsters
+```
+
+## Cleanup
+
+Delete everything we created in this lab.
+
+```sh
+kubectl delete pod,deployment,service -l app.kubernetes.io/name=lobsters
+```
