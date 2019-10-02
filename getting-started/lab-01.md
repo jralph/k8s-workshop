@@ -54,7 +54,7 @@ The pod is gone forever.
 
 ### Service
 
-To access our service from outside of the cluster, we'll need to define a service. Create the below declaration in a `service-yml` file.
+To access our service from outside of the cluster, we'll need to define a service. Create the below declaration in a `service.yml` file.
 
 The declaration below defines a service that will route traffic to any pod with the label `app.kubernetes.io/name: lobsters` we created in the pod above. This service routes requests to the port `web`, that we specified in the container spec in our pod declaration. The `type: NodePort` line allows traffic on a particular port of each node to be routed to the service. As we are running locally, this will be `localhost` followed by a random port (for example, `localhost:30821`).
 
