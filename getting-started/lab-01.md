@@ -104,7 +104,7 @@ kubectl delete pod,service -l app.kubernetes.io/name=lobsters
 
 ### Deployments
 
-When we delete the above pod, it stays deleted. Your pod can also disapear if your cluster node fails, or if the app crashes and can't be restarted. The Kubernetes solution to this is a Deployment. A deployment will create a Replica Set that ensures a pod or number of pods is always running somewhere in the cluster. In fact, it is almost never appropriate to create individual pods as we did above.
+When we delete the above pod, it stays deleted. Your pod can also disappear if your cluster node fails, or if the app crashes and can't be restarted. The Kubernetes solution to this is a Deployment. A deployment will create a Replica Set that ensures a pod or number of pods is always running somewhere in the cluster. In fact, it is almost never appropriate to create individual pods as we did above.
 
 In the below declaration we create a deployment of our lobster app. We give it the usual labels so we know this deployment is part of the lobster app. We define `relicas: 1` to tell the deployment that there should always be 1 copy of the pod running at all times. We specify a selector to tell the deployment how to find which pods to manage. We define a template to tell the deployment how to create new pods when needed. This is very similar to the `spec` section our pod declaration above.
 
@@ -223,7 +223,7 @@ Let's apply our updated deployment.
 kubectl apply -f deployment.yml
 ```
 
-Now if we look at the pods, we should gradually see the new pods start to appear, and the old ones disapear. This is achieved by the deployment creating a new replica set and gradually scaling it up, while gradually sclaing down and deleting the old replica set.
+Now if we look at the pods, we should gradually see the new pods start to appear, and the old ones disappear. This is achieved by the deployment creating a new replica set and gradually scaling it up, while gradually scaling down and deleting the old replica set.
 
 We can see this.
 
